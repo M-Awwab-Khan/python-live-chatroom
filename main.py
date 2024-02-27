@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_socketio import join_room, leave_room, send, SocketIO
 import random
 from string import ascii_uppercase
@@ -21,6 +21,7 @@ def generate_unique_code(length):
 
 @app.route('/', methods=['POST', 'GET'])
 def home():
+    session.clear()
     if request.method == 'POST':
         name = request.form.get('name')
         code = request.form.get('code')
@@ -42,6 +43,11 @@ def home():
             }
         elif code not in rooms:
             return render_template('home.html', error="That room doesn't exist.", code=code, name=name)
+        
+        session['room'] = room
+        session['name'] = name
+        return redirect(url_for('room'))
+
             
     return render_template('home.html')
 
