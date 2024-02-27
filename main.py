@@ -31,11 +31,11 @@ def home():
         if not name:
             return render_template('home.html', error='Please enter a name.', code=code, name=name)
 
-        if join and not code:
+        if join != False and not code:
             return render_template('home.html', error='Please enter a code.', code=code, name=name)
 
         room = code
-        if create:
+        if create != False:
             room = generate_unique_code(4)
             rooms[room] = {
                 'members': 0,
@@ -54,6 +54,9 @@ def home():
 
 @app.route('/room')
 def room():
+    room = session.get('room')
+    if not room or not session.get('name') or room not in rooms:
+        return redirect(url_for('home'))
     return render_template('room.html')
 
 if __name__ == "__main__":
