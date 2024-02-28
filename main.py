@@ -97,5 +97,21 @@ def disconnect():
     }, to=room)
     print(f"{name} has left the room {room}.")
 
+@socketio.on('message')
+def message(data):
+    room = session.get('room')
+    name = session.get('name')
+
+    if room not in rooms:
+        return
+
+    content = {
+        "name": name,
+        "message": data['data']
+    }
+    send(content, to=room)
+    rooms[room]['messages'].append(content)
+    print(f"{name} said: {content['message']}")
+
 if __name__ == "__main__":
     socketio.run(app, debug=True)
