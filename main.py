@@ -57,7 +57,7 @@ def room():
     room = session.get('room')
     if not room or not session.get('name') or room not in rooms:
         return redirect(url_for('home'))
-    return render_template('room.html')
+    return render_template('room.html', room=room)
 
 @socketio.on('connect')
 def connect(auth):
